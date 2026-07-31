@@ -45,23 +45,23 @@ Vercel
 📂 Project Structure
 travel-booking/
 │
-├── public/
+ public/
 │
-├── src/
-│   ├── components/
-│   │   ├── Navbar.jsx
-│   │   ├── Footer.jsx
-│   │   └── PackageCard.jsx
+ src/
+│    components/
+│   │    Navbar.jsx
+│   │    Footer.jsx
+│   │    PackageCard.jsx
 │   │
-│   ├── data/
+│    data/
 │   │   └── packages.js
 │   │
 │   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── Packages.jsx
-│   │   ├── PackageDetails.jsx
-│   │   ├── Booking.jsx
-│   │   └── MyBookings.jsx
+│   │    Home.jsx
+│   │    Packages.jsx
+│   │    PackageDetails.jsx
+│   │    Booking.jsx
+│   │    MyBookings.jsx
 │   │
 │   ├── App.jsx
 │   ├── main.jsx
