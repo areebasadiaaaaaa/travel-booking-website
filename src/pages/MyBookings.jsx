@@ -1,576 +1,301 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { packages } from "../data/packages";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import packages from "../data/packages";
 
-const MyBookings = () => {
-  const [bookings, setBookings] = useState([]);
-  const [editingBooking, setEditingBooking] = useState(null);
+function MyBookings() {
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const savedBookings =
-      JSON.parse(localStorage.getItem("bookings")) || [];
+  const [bookings, setBookings] = useState(() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("travelBookings") || "[]"
+      );
+    } catch {
+      return [];
+    }
+  });
 
-    setBookings(savedBookings);
-  }, []);
+  const [deleteId, setDeleteId] = useState(null);
 
-  const getPackageDetails = (destination) => {
+  const getPackageDetails = (packageId) => {
     return packages.find(
-      (item) =>
-        item.location.toLowerCase().includes(
-          destination.toLowerCase()
-        ) ||
-        destination
-          .toLowerCase()
-          .includes(item.location.split(",")[0].toLowerCase())
+      (item) => Number(item.id) === Number(packageId)
     );
   };
 
   const handleDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to cancel this booking?"
-    );
-
-    if (!confirmDelete) return;
-
     const updatedBookings = bookings.filter(
       (booking) => booking.id !== id
     );
 
     localStorage.setItem(
-      "bookings",
+      "travelBookings",
       JSON.stringify(updatedBookings)
     );
 
     setBookings(updatedBookings);
-  };
-
-  const handleEdit = (booking) => {
-    setEditingBooking({ ...booking });
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-
-    setEditingBooking((previousBooking) => ({
-      ...previousBooking,
-      [name]: value,
-    }));
-  };
-
-  const handleUpdate = (e) => {
-    e.preventDefault();
-
-    const updatedBookings = bookings.map((booking) =>
-      booking.id === editingBooking.id
-        ? editingBooking
-        : booking
-    );
-
-    localStorage.setItem(
-      "bookings",
-      JSON.stringify(updatedBookings)
-    );
-
-    setBookings(updatedBookings);
-    setEditingBooking(null);
-
-    alert("Your booking has been updated successfully!");
+    setDeleteId(null);
   };
 
   return (
-    <div className="page">
-
-      {/* PAGE HEADER */}
-
+    <>
       <section className="page-header">
-        <div>
-          <span>YOUR TRAVEL JOURNEY</span>
-
+        <div className="container text-center">
+          <span>YOUR TRAVEL PLANS</span>
           <h1>My Bookings</h1>
-
           <p>
-            Manage your trips, update your travel details,
-            and keep track of your upcoming adventures.
+            Manage, update and cancel your upcoming travel bookings.
           </p>
         </div>
       </section>
 
-      <section className="section">
+      <section className="py-5 bg-light">
         <div className="container">
-
-          {/* STATS */}
-
-          <div className="booking-dashboard">
-
-            <div className="dashboard-card">
-              <div className="dashboard-icon-wrapper">
-                📅
-              </div>
-
-              <div>
-                <strong>{bookings.length}</strong>
-                <p>Total Bookings</p>
-              </div>
-            </div>
-
-            <div className="dashboard-card">
-              <div className="dashboard-icon-wrapper">
-                ✈️
-              </div>
-
-              <div>
-                <strong>{bookings.length}</strong>
-                <p>Upcoming Trips</p>
-              </div>
-            </div>
-
-            <div className="dashboard-card">
-              <div className="dashboard-icon-wrapper">
-                🌍
-              </div>
-
-              <div>
-                <strong>
-                  {
-                    new Set(
-                      bookings.map(
-                        (booking) => booking.destination
-                      )
-                    ).size
-                  }
-                </strong>
-
-                <p>Destinations</p>
-              </div>
-            </div>
-
-          </div>
-
-          {/* EDIT BOOKING */}
-
-          {editingBooking && (
-            <div className="edit-booking-overlay">
-
-              <div className="edit-booking-modal">
-
-                <div className="edit-modal-header">
-
-                  <div>
-                    <span>MANAGE YOUR TRIP</span>
-
-                    <h2>Edit Booking</h2>
-
-                    <p>
-                      Update your travel information below.
-                    </p>
-                  </div>
-
-                  <button
-                    className="modal-close-button"
-                    onClick={() =>
-                      setEditingBooking(null)
-                    }
-                  >
-                    ×
-                  </button>
-
-                </div>
-
-                <form onSubmit={handleUpdate}>
-
-                  <div className="form-row">
-
-                    <div className="form-group">
-                      <label>Full Name</label>
-
-                      <input
-                        type="text"
-                        name="name"
-                        value={editingBooking.name}
-                        onChange={handleEditChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Email Address</label>
-
-                      <input
-                        type="email"
-                        name="email"
-                        value={editingBooking.email}
-                        onChange={handleEditChange}
-                        required
-                      />
-                    </div>
-
-                  </div>
-
-                  <div className="form-row">
-
-                    <div className="form-group">
-                      <label>Destination</label>
-
-                      <select
-                        name="destination"
-                        value={editingBooking.destination}
-                        onChange={handleEditChange}
-                        required
-                      >
-                        <option value="Dubai">
-                          Dubai
-                        </option>
-
-                        <option value="Maldives">
-                          Maldives
-                        </option>
-
-                        <option value="Turkey">
-                          Turkey
-                        </option>
-
-                        <option value="Switzerland">
-                          Switzerland
-                        </option>
-
-                        <option value="Bali">
-                          Bali
-                        </option>
-
-                        <option value="Paris">
-                          Paris
-                        </option>
-                      </select>
-                    </div>
-
-                    <div className="form-group">
-                      <label>Travelers</label>
-
-                      <input
-                        type="number"
-                        name="travelers"
-                        min="1"
-                        value={editingBooking.travelers}
-                        onChange={handleEditChange}
-                        required
-                      />
-                    </div>
-
-                  </div>
-
-                  <div className="form-row">
-
-                    <div className="form-group">
-                      <label>Travel Date</label>
-
-                      <input
-                        type="date"
-                        name="travelDate"
-                        value={editingBooking.travelDate}
-                        onChange={handleEditChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Phone Number</label>
-
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={editingBooking.phone}
-                        onChange={handleEditChange}
-                        required
-                      />
-                    </div>
-
-                  </div>
-
-                  <div className="form-group">
-                    <label>Additional Message</label>
-
-                    <textarea
-                      name="message"
-                      rows="4"
-                      value={
-                        editingBooking.message || ""
-                      }
-                      onChange={handleEditChange}
-                    />
-                  </div>
-
-                  <div className="modal-actions">
-
-                    <button
-                      type="button"
-                      className="modal-cancel-button"
-                      onClick={() =>
-                        setEditingBooking(null)
-                      }
-                    >
-                      Cancel
-                    </button>
-
-                    <button
-                      type="submit"
-                      className="modal-save-button"
-                    >
-                      Save Changes
-                    </button>
-
-                  </div>
-
-                </form>
-
-              </div>
-
-            </div>
-          )}
-
-          {/* EMPTY STATE */}
-
           {bookings.length === 0 ? (
+            <div className="card border-0 shadow-sm text-center p-5">
+              <div className="display-2 mb-3">✈️</div>
 
-            <div className="professional-empty-state">
+              <h2 className="fw-bold">
+                No Bookings Yet
+              </h2>
 
-              <div className="empty-state-icon">
-                ✈️
-              </div>
-
-              <h2>No Trips Booked Yet</h2>
-
-              <p>
-                Your travel journey is waiting for you.
-                Explore our destinations and book your
-                next unforgettable adventure.
+              <p className="text-muted mx-auto mb-4" style={{ maxWidth: "500px" }}>
+                You haven't booked a trip yet. Explore our travel
+                packages and start planning your next adventure.
               </p>
 
-              <Link
-                to="/packages"
-                className="primary-button"
-              >
-                Explore Travel Packages →
-              </Link>
-
+              <div>
+                <Link
+                  to="/packages"
+                  className="btn btn-primary btn-lg rounded-pill px-5"
+                >
+                  Explore Packages
+                </Link>
+              </div>
             </div>
-
           ) : (
-
-            /* BOOKINGS */
-
-            <div className="my-bookings-section">
-
-              <div className="bookings-section-heading">
-
+            <>
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
                 <div>
-                  <span>YOUR RESERVATIONS</span>
+                  <h2 className="fw-bold mb-1">
+                    Your Reservations
+                  </h2>
 
-                  <h2>Upcoming Trips</h2>
-
-                  <p>
-                    Here are your confirmed travel
-                    reservations.
+                  <p className="text-muted mb-0">
+                    {bookings.length} booking
+                    {bookings.length !== 1 ? "s" : ""} saved
                   </p>
                 </div>
 
                 <Link
                   to="/packages"
-                  className="add-trip-button"
+                  className="btn btn-primary rounded-pill px-4"
                 >
                   + Book Another Trip
                 </Link>
-
               </div>
 
-              <div className="professional-bookings-list">
-
+              <div className="row g-4">
                 {bookings.map((booking) => {
-
-                  const packageDetails =
-                    getPackageDetails(
-                      booking.destination
-                    );
+                  const packageData = getPackageDetails(
+                    booking.packageId
+                  );
 
                   return (
+                    <div className="col-12" key={booking.id}>
+                      <div className="card border-0 shadow-sm overflow-hidden">
+                        <div className="row g-0">
+                          <div className="col-md-4">
+                            {packageData ? (
+                              <img
+                                src={packageData.image}
+                                alt={packageData.destination}
+                                className="w-100 h-100"
+                                style={{
+                                  minHeight: "280px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            ) : (
+                              <div
+                                className="d-flex align-items-center justify-content-center bg-secondary text-white h-100"
+                                style={{ minHeight: "280px" }}
+                              >
+                                Package unavailable
+                              </div>
+                            )}
+                          </div>
 
-                    <div
-                      className="professional-booking-card"
-                      key={booking.id}
-                    >
+                          <div className="col-md-8">
+                            <div className="card-body p-4">
+                              <div className="d-flex flex-column flex-lg-row justify-content-between gap-3">
+                                <div>
+                                  <span className="badge bg-success-subtle text-success rounded-pill px-3 py-2 mb-2">
+                                    Confirmed
+                                  </span>
 
-                      {/* IMAGE */}
+                                  <h3 className="fw-bold mb-1">
+                                    {packageData
+                                      ? packageData.title
+                                      : "Travel Package"}
+                                  </h3>
 
-                      <div className="booking-card-image">
+                                  <p className="text-muted mb-3">
+                                    📍{" "}
+                                    {packageData
+                                      ? packageData.destination
+                                      : "Destination unavailable"}
+                                  </p>
+                                </div>
 
-                        <img
-                          src={
-                            packageDetails?.image ||
-                            "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80"
-                          }
-                          alt={booking.destination}
-                        />
+                                {packageData && (
+                                  <div className="text-lg-end">
+                                    <small className="text-muted">
+                                      Package price
+                                    </small>
 
-                        <div className="booking-image-label">
-                          ✈ Your Trip
+                                    <div className="fs-4 fw-bold text-primary">
+                                      ${packageData.price}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="row g-3 my-2">
+                                <div className="col-sm-6 col-lg-3">
+                                  <small className="text-muted d-block">
+                                    Traveler
+                                  </small>
+                                  <strong>
+                                    {booking.name}
+                                  </strong>
+                                </div>
+
+                                <div className="col-sm-6 col-lg-3">
+                                  <small className="text-muted d-block">
+                                    Travel Date
+                                  </small>
+                                  <strong>
+                                    {booking.travelDate}
+                                  </strong>
+                                </div>
+
+                                <div className="col-sm-6 col-lg-3">
+                                  <small className="text-muted d-block">
+                                    Travelers
+                                  </small>
+                                  <strong>
+                                    {booking.travelers}
+                                  </strong>
+                                </div>
+
+                                <div className="col-sm-6 col-lg-3">
+                                  <small className="text-muted d-block">
+                                    Phone
+                                  </small>
+                                  <strong>
+                                    {booking.phone}
+                                  </strong>
+                                </div>
+                              </div>
+
+                              {booking.specialRequest && (
+                                <div className="bg-light rounded-3 p-3 mt-3">
+                                  <small className="text-muted d-block mb-1">
+                                    Special Request
+                                  </small>
+
+                                  <span>
+                                    {booking.specialRequest}
+                                  </span>
+                                </div>
+                              )}
+
+                              <div className="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
+                                {packageData && (
+                                  <Link
+                                    to={`/packages/${packageData.id}`}
+                                    className="btn btn-outline-primary rounded-pill px-4"
+                                  >
+                                    View Package
+                                  </Link>
+                                )}
+
+                                <button
+                                  className="btn btn-primary rounded-pill px-4"
+                                  onClick={() =>
+                                    navigate(
+                                      `/booking?edit=${booking.id}`
+                                    )
+                                  }
+                                >
+                                  Edit Booking
+                                </button>
+
+                                <button
+                                  className="btn btn-outline-danger rounded-pill px-4"
+                                  onClick={() =>
+                                    setDeleteId(booking.id)
+                                  }
+                                >
+                                  Cancel Booking
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-
                       </div>
-
-                      {/* DETAILS */}
-
-                      <div className="booking-card-content">
-
-                        <div className="booking-card-top">
-
-                          <div>
-
-                            <span className="confirmed-badge">
-                              ✓ Confirmed
-                            </span>
-
-                            <h3>
-                              {booking.destination}
-                            </h3>
-
-                            <p className="booking-subtitle">
-                              Your upcoming travel
-                              adventure
-                            </p>
-
-                          </div>
-
-                          <div className="booking-id">
-                            Booking ID
-                            <strong>
-                              #{String(
-                                booking.id
-                              ).slice(-6)}
-                            </strong>
-                          </div>
-
-                        </div>
-
-                        <div className="booking-details-grid">
-
-                          <div className="booking-detail">
-                            <span>📅</span>
-
-                            <div>
-                              <small>
-                                Travel Date
-                              </small>
-
-                              <strong>
-                                {booking.travelDate}
-                              </strong>
-                            </div>
-                          </div>
-
-                          <div className="booking-detail">
-                            <span>👥</span>
-
-                            <div>
-                              <small>
-                                Travelers
-                              </small>
-
-                              <strong>
-                                {booking.travelers}{" "}
-                                Person(s)
-                              </strong>
-                            </div>
-                          </div>
-
-                          <div className="booking-detail">
-                            <span>👤</span>
-
-                            <div>
-                              <small>
-                                Booked By
-                              </small>
-
-                              <strong>
-                                {booking.name}
-                              </strong>
-                            </div>
-                          </div>
-
-                          <div className="booking-detail">
-                            <span>📍</span>
-
-                            <div>
-                              <small>
-                                Destination
-                              </small>
-
-                              <strong>
-                                {booking.destination}
-                              </strong>
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div className="booking-card-footer">
-
-                          <div className="contact-info">
-
-                            <span>
-                              ✉ {booking.email}
-                            </span>
-
-                            <span>
-                              ☎ {booking.phone}
-                            </span>
-
-                          </div>
-
-                          <div className="booking-card-actions">
-
-                            <button
-                              className="professional-edit-button"
-                              onClick={() =>
-                                handleEdit(
-                                  booking
-                                )
-                              }
-                            >
-                              ✏️ Edit Booking
-                            </button>
-
-                            <button
-                              className="professional-delete-button"
-                              onClick={() =>
-                                handleDelete(
-                                  booking.id
-                                )
-                              }
-                            >
-                              Cancel Trip
-                            </button>
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
                     </div>
-
                   );
                 })}
-
               </div>
-
-            </div>
-
+            </>
           )}
-
         </div>
       </section>
 
-    </div>
+      {deleteId && (
+        <div
+          className="modal d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content border-0 rounded-4">
+              <div className="modal-body p-4 text-center">
+                <div className="display-5 mb-3">⚠️</div>
+
+                <h4 className="fw-bold">
+                  Cancel this booking?
+                </h4>
+
+                <p className="text-muted">
+                  This action will permanently remove the booking
+                  from your saved reservations.
+                </p>
+
+                <div className="d-flex justify-content-center gap-2 mt-4">
+                  <button
+                    className="btn btn-light rounded-pill px-4"
+                    onClick={() => setDeleteId(null)}
+                  >
+                    Keep Booking
+                  </button>
+
+                  <button
+                    className="btn btn-danger rounded-pill px-4"
+                    onClick={() => handleDelete(deleteId)}
+                  >
+                    Yes, Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
-};
+}
 
 export default MyBookings;

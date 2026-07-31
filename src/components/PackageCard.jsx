@@ -1,46 +1,56 @@
 import { Link } from "react-router-dom";
 
-const PackageCard = ({ packageData }) => {
+function PackageCard({ packageData }) {
   return (
-    <div className="package-card">
+    <div className="package-card h-100">
+      {/* Package Image */}
       <div className="package-image-wrapper">
         <img
           src={packageData.image}
-          alt={packageData.title}
+          alt={packageData.destination}
           className="package-image"
         />
 
-        <div className="rating-badge">
-          ★ {packageData.rating}
-        </div>
+        <span className="package-category">
+          {packageData.category}
+        </span>
       </div>
 
-      <div className="package-content">
-        <p className="package-location">📍 {packageData.location}</p>
+      {/* Package Content */}
+      <div className="package-content d-flex flex-column">
+        <div>
+          <h3>{packageData.title}</h3>
 
-        <h3>{packageData.title}</h3>
+          <p className="package-destination">
+            📍 {packageData.destination}
+          </p>
 
-        <p className="package-duration">
-          🕒 {packageData.duration}
-        </p>
+          <div className="package-info">
+            <span>🕒 {packageData.duration}</span>
+          </div>
 
-        <div className="package-bottom">
-          <div>
-            <span className="price-label">From</span>
-            <strong>${packageData.price.toLocaleString("en-US")}</strong>
-            <span className="per-person"> / person</span>
+          <p className="package-description">
+            {packageData.description}
+          </p>
+        </div>
+
+        {/* Price + Button */}
+        <div className="package-bottom mt-auto">
+          <div className="package-price">
+            <small>Starting from</small>
+            <strong>${packageData.price}</strong>
           </div>
 
           <Link
             to={`/packages/${packageData.id}`}
-            className="details-button"
+            className="view-details-btn"
           >
-            View Details
+            View Details →
           </Link>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default PackageCard;

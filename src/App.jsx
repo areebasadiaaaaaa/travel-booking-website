@@ -9,27 +9,26 @@ import PackageDetails from "./pages/PackageDetails";
 import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 
-const App = () => {
+function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <div className="app">
+        <Navbar />
 
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/packages" element={<Packages />} />
-          <Route
-            path="/packages/:id"
-            element={<PackageDetails />}
-          />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/my-bookings" element={<MyBookings />} />
-        </Routes>
-      </main>
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/packages" element={<Packages />} />
+            <Route path="/packages/:id" element={<PackageDetails />} />
+            <Route path="/booking" element={<Booking />} />
+            <Route path="/my-bookings" element={<MyBookings />} />
+          </Routes>
+        </main>
 
-      <Footer />
+        <Footer />
+      </div>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
