@@ -216,7 +216,8 @@ https://github.com/areebasadiaaaaaa/travel-booking-website
 
 Live Project
 
-YOUR_VERCEL_LIVE_URL
+travel-booking-website-lilac.vercel.app
+
 
 
 🎯 Internship Assignment Requirements
@@ -225,25 +226,43 @@ This project was developed according to the provided Front-End Development Inter
 
 Requirements Covered
 ✅ HTML5
+
 ✅ CSS3
+
 ✅ JavaScript ES6
+
 ✅ Bootstrap 5
+
 ✅ React.js
+
 ✅ Git & GitHub
+
 ✅ Responsive design
+
 ✅ Reusable React components
+
 ✅ React Hooks
+
 ✅ Form validation
+
 ✅ CRUD functionality
+
 ✅ Local Storage
+
 ✅ Search and filtering
+
 ✅ Clean project structure
+
 ✅ Modern UI/UX
+
 ✅ GitHub repository
+
 ✅ Live deployment
-✅ Project screenshots
+
+✅ Project screenshot
+s
 ✅ README documentation
-✅ Project demonstration recording
+
 👩‍💻 Project Information
 
 Project: Travel Booking Website
