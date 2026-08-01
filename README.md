@@ -216,7 +216,7 @@ https://github.com/areebasadiaaaaaa/travel-booking-website
 
 Live Project
 
-travel-booking-website-lilac.vercel.app
+https://travel-booking-website-lilac.vercel.app
 
 
 
